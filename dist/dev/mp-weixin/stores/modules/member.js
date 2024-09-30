@@ -18,7 +18,16 @@ const useMemberStore = common_vendor.defineStore(
   },
   // TODO: 持久化
   {
-    persist: true
+    persist: {
+      storage: {
+        getItem(key) {
+          return common_vendor.index.getStorageSync(key);
+        },
+        setItem(key, value) {
+          common_vendor.index.setStorageSync(key, value);
+        }
+      }
+    }
   }
 );
 exports.useMemberStore = useMemberStore;
