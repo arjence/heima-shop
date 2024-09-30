@@ -1,0 +1,1 @@
+<view class="nav-bar data-v-ef85133b" style="{{'padding-top:' + b}}"><view class="logo data-v-ef85133b"><image class="img data-v-ef85133b" src="{{a}}" mode="widthFix"/><text class="data-v-ef85133b">新鲜 · 亲民 · 快捷</text></view><view class="search data-v-ef85133b"><text class="icon-search data-v-ef85133b">搜索商品</text><text class="icon-scan data-v-ef85133b"></text></view></view>

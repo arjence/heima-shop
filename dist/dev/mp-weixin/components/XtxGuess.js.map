@@ -1,0 +1,1 @@
+{"version":3,"file":"XtxGuess.js","sources":["../../../../uniComponent:/RDovQXJqZW5jZS_lrabkuaAvdW5pYXBwL2hlaW1hLXNob3Avc3JjL2NvbXBvbmVudHMvWHR4R3Vlc3MudnVl"],"sourcesContent":["import Component from 'D:/Arjence/学习/uniapp/heima-shop/src/components/XtxGuess.vue'\nwx.createComponent(Component)"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;AACA,GAAG,gBAAgB,SAAS;"}

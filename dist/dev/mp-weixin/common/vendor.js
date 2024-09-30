@@ -14,26 +14,6 @@ function makeMap(str, expectsLowerCase) {
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
-function normalizeClass(value) {
-  let res = "";
-  if (isString(value)) {
-    res = value;
-  } else if (isArray(value)) {
-    for (let i = 0; i < value.length; i++) {
-      const normalized = normalizeClass(value[i]);
-      if (normalized) {
-        res += normalized + " ";
-      }
-    }
-  } else if (isObject$1(value)) {
-    for (const name in value) {
-      if (value[name]) {
-        res += name + " ";
-      }
-    }
-  }
-  return res.trim();
-}
 const toDisplayString = (val) => {
   return isString(val) ? val : val == null ? "" : isArray(val) || isObject$1(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
@@ -124,8 +104,8 @@ const def = (obj, key, value) => {
   });
 };
 const looseToNumber = (val) => {
-  const n2 = parseFloat(val);
-  return isNaN(n2) ? val : n2;
+  const n = parseFloat(val);
+  return isNaN(n) ? val : n;
 };
 const LINEFEED = "\n";
 const SLOT_DEFAULT_NAME = "d";
@@ -311,8 +291,8 @@ const E = function() {
 };
 E.prototype = {
   on: function(name, callback, ctx) {
-    var e2 = this.e || (this.e = {});
-    (e2[name] || (e2[name] = [])).push({
+    var e = this.e || (this.e = {});
+    (e[name] || (e[name] = [])).push({
       fn: callback,
       ctx
     });
@@ -338,8 +318,8 @@ E.prototype = {
     return this;
   },
   off: function(name, callback) {
-    var e2 = this.e || (this.e = {});
-    var evts = e2[name];
+    var e = this.e || (this.e = {});
+    var evts = e[name];
     var liveEvents = [];
     if (evts && callback) {
       for (var i = 0, len = evts.length; i < len; i++) {
@@ -347,7 +327,7 @@ E.prototype = {
           liveEvents.push(evts[i]);
       }
     }
-    liveEvents.length ? e2[name] = liveEvents : delete e2[name];
+    liveEvents.length ? e[name] = liveEvents : delete e[name];
     return this;
   }
 };
@@ -522,8 +502,8 @@ function tryCatch(fn) {
   return function() {
     try {
       return fn.apply(fn, arguments);
-    } catch (e2) {
-      console.error(e2);
+    } catch (e) {
+      console.error(e);
     }
   };
 }
@@ -947,7 +927,7 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
   }
   if (!isArray(name))
     name = [name];
-  name.forEach((n2) => emitter.off(n2, callback));
+  name.forEach((n) => emitter.off(n, callback));
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
   emitter.emit(name, ...args);
@@ -958,7 +938,7 @@ let enabled;
 function normalizePushMessage(message) {
   try {
     return JSON.parse(message);
-  } catch (e2) {
+  } catch (e) {
   }
   return message;
 }
@@ -3689,9 +3669,9 @@ const PublicInstanceProxyHandlers = {
     }
     let normalizedProps;
     if (key[0] !== "$") {
-      const n2 = accessCache[key];
-      if (n2 !== void 0) {
-        switch (n2) {
+      const n = accessCache[key];
+      if (n !== void 0) {
+        switch (n) {
           case 1:
             return setupState[key];
           case 2:
@@ -5386,14 +5366,14 @@ function findComponentPublicInstance(mpComponents, id) {
   }
   return null;
 }
-function setTemplateRef({ r, f }, refValue, setupState) {
+function setTemplateRef({ r, f: f2 }, refValue, setupState) {
   if (isFunction(r)) {
     r(refValue, {});
   } else {
     const _isString = isString(r);
     const _isRef = isRef(r);
     if (_isString || _isRef) {
-      if (f) {
+      if (f2) {
         if (!_isRef) {
           return;
         }
@@ -5618,8 +5598,8 @@ function setupRenderEffect(instance) {
   update.id = instance.uid;
   toggleRecurse(instance, true);
   {
-    effect.onTrack = instance.rtc ? (e2) => invokeArrayFns$1(instance.rtc, e2) : void 0;
-    effect.onTrigger = instance.rtg ? (e2) => invokeArrayFns$1(instance.rtg, e2) : void 0;
+    effect.onTrack = instance.rtc ? (e) => invokeArrayFns$1(instance.rtc, e) : void 0;
+    effect.onTrigger = instance.rtg ? (e) => invokeArrayFns$1(instance.rtg, e) : void 0;
     update.ownerInstance = instance;
   }
   update();
@@ -5897,21 +5877,21 @@ function vOn(value, key) {
   return name;
 }
 function createInvoker(initialValue, instance) {
-  const invoker = (e2) => {
-    patchMPEvent(e2);
-    let args = [e2];
-    if (e2.detail && e2.detail.__args__) {
-      args = e2.detail.__args__;
+  const invoker = (e) => {
+    patchMPEvent(e);
+    let args = [e];
+    if (e.detail && e.detail.__args__) {
+      args = e.detail.__args__;
     }
     const eventValue = invoker.value;
-    const invoke = () => callWithAsyncErrorHandling(patchStopImmediatePropagation(e2, eventValue), instance, 5, args);
-    const eventTarget = e2.target;
+    const invoke = () => callWithAsyncErrorHandling(patchStopImmediatePropagation(e, eventValue), instance, 5, args);
+    const eventTarget = e.target;
     const eventSync = eventTarget ? eventTarget.dataset ? String(eventTarget.dataset.eventsync) === "true" : false : false;
-    if (bubbles.includes(e2.type) && !eventSync) {
+    if (bubbles.includes(e.type) && !eventSync) {
       setTimeout(invoke);
     } else {
       const res = invoke();
-      if (e2.type === "input" && (isArray(res) || isPromise(res))) {
+      if (e.type === "input" && (isArray(res) || isPromise(res))) {
         return;
       }
       return res;
@@ -5955,21 +5935,52 @@ function patchMPEvent(event) {
     }
   }
 }
-function patchStopImmediatePropagation(e2, value) {
+function patchStopImmediatePropagation(e, value) {
   if (isArray(value)) {
-    const originalStop = e2.stopImmediatePropagation;
-    e2.stopImmediatePropagation = () => {
-      originalStop && originalStop.call(e2);
-      e2._stopped = true;
+    const originalStop = e.stopImmediatePropagation;
+    e.stopImmediatePropagation = () => {
+      originalStop && originalStop.call(e);
+      e._stopped = true;
     };
-    return value.map((fn) => (e3) => !e3._stopped && fn(e3));
+    return value.map((fn) => (e2) => !e2._stopped && fn(e2));
   } else {
     return value;
   }
 }
+function vFor(source, renderItem) {
+  let ret;
+  if (isArray(source) || isString(source)) {
+    ret = new Array(source.length);
+    for (let i = 0, l = source.length; i < l; i++) {
+      ret[i] = renderItem(source[i], i, i);
+    }
+  } else if (typeof source === "number") {
+    if (!Number.isInteger(source)) {
+      warn(`The v-for range expect an integer value but got ${source}.`);
+      return [];
+    }
+    ret = new Array(source);
+    for (let i = 0; i < source; i++) {
+      ret[i] = renderItem(i + 1, i, i);
+    }
+  } else if (isObject$1(source)) {
+    if (source[Symbol.iterator]) {
+      ret = Array.from(source, (item, i) => renderItem(item, i, i));
+    } else {
+      const keys = Object.keys(source);
+      ret = new Array(keys.length);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i];
+        ret[i] = renderItem(source[key], key, i);
+      }
+    }
+  } else {
+    ret = [];
+  }
+  return ret;
+}
 const o = (value, key) => vOn(value, key);
-const e = (target, ...sources) => extend(target, ...sources);
-const n = (value) => normalizeClass(value);
+const f = (source, renderItem) => vFor(source, renderItem);
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
 function createApp$1(rootComponent, rootProps = null) {
@@ -7451,9 +7462,9 @@ function parsePersistence(factoryOptions, store) {
         paths,
         debug
       };
-    } catch (e2) {
+    } catch (e) {
       if (o2.debug)
-        console.error("[pinia-plugin-persistedstate]", e2);
+        console.error("[pinia-plugin-persistedstate]", e);
       return null;
     }
   };
@@ -7463,18 +7474,18 @@ function hydrateStore(store, { storage, serializer, key, debug }) {
     const fromStorage = storage == null ? void 0 : storage.getItem(key);
     if (fromStorage)
       store.$patch(serializer == null ? void 0 : serializer.deserialize(fromStorage));
-  } catch (e2) {
+  } catch (e) {
     if (debug)
-      console.error("[pinia-plugin-persistedstate]", e2);
+      console.error("[pinia-plugin-persistedstate]", e);
   }
 }
 function persistState(state, { storage, serializer, key, paths, debug }) {
   try {
     const toStore = Array.isArray(paths) ? pick(state, paths) : state;
     storage.setItem(key, serializer.serialize(toStore));
-  } catch (e2) {
+  } catch (e) {
     if (debug)
-      console.error("[pinia-plugin-persistedstate]", e2);
+      console.error("[pinia-plugin-persistedstate]", e);
   }
 }
 function createPersistedState(factoryOptions = {}) {
@@ -7532,17 +7543,18 @@ const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
 const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onHide = /* @__PURE__ */ createHook(ON_HIDE);
 const onLaunch = /* @__PURE__ */ createHook(ON_LAUNCH);
+const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
 exports._export_sfc = _export_sfc;
 exports.createPinia = createPinia;
 exports.createSSRApp = createSSRApp;
 exports.defineComponent = defineComponent;
 exports.defineStore = defineStore;
-exports.e = e;
+exports.f = f;
 exports.index = index;
-exports.n = n;
 exports.o = o;
 exports.onHide = onHide;
 exports.onLaunch = onLaunch;
+exports.onLoad = onLoad;
 exports.onShow = onShow;
 exports.p = p;
 exports.ref = ref;

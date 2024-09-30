@@ -1,7 +1,12 @@
 {
   "navigationBarTitleText": "首页",
+  "navigationBarTextStyle": "white",
+  "navigationStyle": "custom",
   "usingComponents": {
-    "uni-card": "../../node-modules/@dcloudio/uni-ui/lib/uni-card/uni-card",
-    "uni-section": "../../node-modules/@dcloudio/uni-ui/lib/uni-section/uni-section"
+    "xtx-swiper": "../../components/XtxSwiper",
+    "xtx-guess": "../../components/XtxGuess",
+    "custom-nav-bar": "./cpns/CustomNavBar",
+    "category-panel": "./cpns/CategoryPanel",
+    "hot-panel": "./cpns/HotPanel"
   }
 }
