@@ -1,0 +1,1 @@
+<uni-section wx:if="{{b}}" u-s="{{['d']}}" u-i="2b6b2fe2-0" bind:__l="__l" u-p="{{b}}"><uni-card wx:if="{{a}}" u-s="{{['d']}}" u-i="2b6b2fe2-1,2b6b2fe2-0" bind:__l="__l" u-p="{{a}}"><text class="uni-body">这是一个基础卡片示例，此示例展示了一个标题加标题额外信息的标准卡片。</text></uni-card></uni-section>
