@@ -4,5 +4,25 @@
   "setting": {
     "compileHotReLoad": true,
     "urlCheck": false
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "商品详情",
+          "pathName": "pages/goods/goods",
+          "query": "id=1369155859933827074",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "商品分类",
+          "pathName": "pages/category/category",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
   }
 }

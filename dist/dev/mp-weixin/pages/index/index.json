@@ -7,6 +7,7 @@
     "xtx-guess": "../../components/XtxGuess",
     "custom-nav-bar": "./cpns/CustomNavBar",
     "category-panel": "./cpns/CategoryPanel",
-    "hot-panel": "./cpns/HotPanel"
+    "hot-panel": "./cpns/HotPanel",
+    "page-skeleton": "./cpns/PageSkeleton"
   }
 }

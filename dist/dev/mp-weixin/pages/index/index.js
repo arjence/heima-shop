@@ -12,11 +12,12 @@ if (!Array) {
 const _easycom_XtxSwiper = () => "../../components/XtxSwiper.js";
 const _easycom_XtxGuess = () => "../../components/XtxGuess.js";
 if (!Math) {
-  (CustomNavBar + _easycom_XtxSwiper + CategoryPanel + HotPanel + _easycom_XtxGuess)();
+  (CustomNavBar + PageSkeleton + _easycom_XtxSwiper + CategoryPanel + HotPanel + _easycom_XtxGuess)();
 }
 const CustomNavBar = () => "./cpns/CustomNavBar.js";
 const CategoryPanel = () => "./cpns/CategoryPanel.js";
 const HotPanel = () => "./cpns/HotPanel.js";
+const PageSkeleton = () => "./cpns/PageSkeleton.js";
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "index",
   setup(__props) {
@@ -35,32 +36,50 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       const { result } = await services_home.getHomeHotMutliApi();
       hotRecommendList.value = result;
     };
-    const guessLikeList = common_vendor.ref([]);
-    const getGuessLikeList = async () => {
-      const { result } = await services_home.getHomeGoodsGuessLikeApi();
-      guessLikeList.value = (result == null ? void 0 : result.items) || [];
+    const guessLikeRef = common_vendor.ref();
+    const onScrollToLower = () => {
+      var _a;
+      (_a = guessLikeRef.value) == null ? void 0 : _a.getGuessLikeList();
     };
+    const refresh = common_vendor.ref(false);
+    const onRefresherRefresh = async () => {
+      var _a, _b;
+      refresh.value = true;
+      (_a = guessLikeRef.value) == null ? void 0 : _a.resetData();
+      await Promise.all([
+        getBannerList(),
+        getCategoryList(),
+        getHotRecommend(),
+        (_b = guessLikeRef.value) == null ? void 0 : _b.getGuessLikeList()
+      ]);
+      refresh.value = false;
+    };
+    const onLoading = common_vendor.ref(false);
     common_vendor.onLoad(() => {
-      getBannerList();
-      getCategoryList();
-      getHotRecommend();
-      getGuessLikeList();
+      onLoading.value = true;
+      Promise.all([getBannerList(), getCategoryList(), getHotRecommend()]);
+      onLoading.value = false;
     });
     return (_ctx, _cache) => {
-      return {
-        a: common_vendor.p({
+      return common_vendor.e({
+        a: onLoading.value
+      }, onLoading.value ? {} : {
+        b: common_vendor.p({
           list: bannerList.value
         }),
-        b: common_vendor.p({
+        c: common_vendor.p({
           list: categoryList.value
         }),
-        c: common_vendor.p({
+        d: common_vendor.p({
           list: hotRecommendList.value
         }),
-        d: common_vendor.p({
-          list: guessLikeList.value
-        })
-      };
+        e: common_vendor.sr(guessLikeRef, "2b6b2fe2-5", {
+          "k": "guessLikeRef"
+        }),
+        f: common_vendor.o(onRefresherRefresh),
+        g: refresh.value,
+        h: common_vendor.o(onScrollToLower)
+      });
     };
   }
 });

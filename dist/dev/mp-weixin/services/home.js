@@ -9,7 +9,7 @@ const getHomeCategoryMutliApi = () => {
 const getHomeHotMutliApi = () => {
   return services_index.http.get({ url: "/home/hot/mutli" });
 };
-const getHomeGoodsGuessLikeApi = (page = 1, pageSize = 10) => {
+const getHomeGoodsGuessLikeApi = ({ page = 1, pageSize = 10 }) => {
   return services_index.http.get({ url: "/home/goods/guessLike", data: { page, pageSize } });
 };
 exports.getHomeBannerApi = getHomeBannerApi;

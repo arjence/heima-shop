@@ -1,6 +1,7 @@
+import type { PageParams } from '@/types/global'
 import { http } from './index'
 
-export const getHomeBannerApi = <T>(distributionSite: Number = 1) => {
+export const getHomeBannerApi = <T>(distributionSite: number = 1) => {
   return http.get<T>({ url: '/home/banner', data: { distributionSite } })
 }
 
@@ -12,6 +13,6 @@ export const getHomeHotMutliApi = <T>() => {
   return http.get<T>({ url: '/home/hot/mutli' })
 }
 
-export const getHomeGoodsGuessLikeApi = <T>(page: Number = 1, pageSize: Number = 10) => {
+export const getHomeGoodsGuessLikeApi = <T>({ page = 1, pageSize = 10 }: PageParams) => {
   return http.get<T>({ url: '/home/goods/guessLike', data: { page, pageSize } })
 }

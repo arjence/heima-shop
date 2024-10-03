@@ -18,7 +18,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
                 b: src
               };
             }),
-            d: item.id
+            d: `/pages/hot/hot?type=${item.type}`,
+            e: item.id
           };
         })
       };

@@ -2,23 +2,14 @@
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 
-import type {
-  BannerItem,
-  CategoryItem,
-  HotRecommendItem,
-  GuessLikeData,
-  GuessLikeItem,
-} from '@/types/home'
-import {
-  getHomeBannerApi,
-  getHomeCategoryMutliApi,
-  getHomeHotMutliApi,
-  getHomeGoodsGuessLikeApi,
-} from '@/services/home'
+import type { BannerItem, CategoryItem, HotRecommendItem } from '@/types/home'
+import { getHomeBannerApi, getHomeCategoryMutliApi, getHomeHotMutliApi } from '@/services/home'
 
 import CustomNavBar from './cpns/CustomNavBar.vue'
 import CategoryPanel from './cpns/CategoryPanel.vue'
 import HotPanel from './cpns/HotPanel.vue'
+import type XtxGuess from '@/components/XtxGuess.vue'
+import PageSkeleton from './cpns/PageSkeleton.vue'
 
 const bannerList = ref<BannerItem[]>([])
 const getBannerList = async () => {
@@ -38,28 +29,53 @@ const getHotRecommend = async () => {
   hotRecommendList.value = result
 }
 
-const guessLikeList = ref<GuessLikeItem[]>([])
-const getGuessLikeList = async () => {
-  const { result } = await getHomeGoodsGuessLikeApi<GuessLikeData>()
-  guessLikeList.value = result?.items || []
+const guessLikeRef = ref<InstanceType<typeof XtxGuess>>()
+const onScrollToLower = () => {
+  guessLikeRef.value?.getGuessLikeList()
 }
 
+//下拉刷新
+const refresh = ref(false)
+const onRefresherRefresh = async () => {
+  refresh.value = true
+  //清空猜你喜欢组件数据
+  guessLikeRef.value?.resetData()
+  await Promise.all([
+    getBannerList(),
+    getCategoryList(),
+    getHotRecommend(),
+    guessLikeRef.value?.getGuessLikeList(),
+  ])
+  refresh.value = false
+}
+
+const onLoading = ref(false)
 onLoad(() => {
-  getBannerList()
-  getCategoryList()
-  getHotRecommend()
-  getGuessLikeList()
+  //加载骨架屏
+  onLoading.value = true
+  Promise.all([getBannerList(), getCategoryList(), getHotRecommend()])
+  onLoading.value = false
 })
 </script>
 
 <template>
   <CustomNavBar />
-  <scroll-view class="swiper-view" scroll-y>
-    <XtxSwiper :list="bannerList" />
-    <CategoryPanel :list="categoryList" />
-    <HotPanel :list="hotRecommendList" />
-    <XtxGuess :list="guessLikeList" />
-  </scroll-view>
+  <PageSkeleton v-if="onLoading" />
+  <template v-else>
+    <scroll-view
+      refresher-enabled
+      @refresherrefresh="onRefresherRefresh"
+      :refresher-triggered="refresh"
+      @scrolltolower="onScrollToLower"
+      class="swiper-view"
+      scroll-y
+    >
+      <XtxSwiper :list="bannerList" />
+      <CategoryPanel :list="categoryList" />
+      <HotPanel :list="hotRecommendList" />
+      <XtxGuess ref="guessLikeRef" />
+    </scroll-view>
+  </template>
 </template>
 
 <style lang="scss">

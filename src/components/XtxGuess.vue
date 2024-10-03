@@ -1,9 +1,39 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import type { GuessLikeItem } from '@/types/home'
+import type { PageData, PageParams } from '@/types/global'
+import { getHomeGoodsGuessLikeApi } from '@/services/home'
 
-defineProps<{
-  list: GuessLikeItem[]
-}>()
+const pageParams: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
+let finish = ref(false)
+const guessLikeList = ref<GuessLikeItem[]>([])
+const getGuessLikeList = async () => {
+  if (finish.value) return
+  const { result } = await getHomeGoodsGuessLikeApi<PageData<GuessLikeItem[]>>(pageParams)
+  guessLikeList.value.push(...(result.items ?? []))
+  pageParams.page += 1
+  if (pageParams.page > result.pages!) {
+    finish.value = true
+  }
+}
+
+const resetData = () => {
+  guessLikeList.value = []
+  pageParams.page = 1
+  finish.value = false
+}
+
+onMounted(() => {
+  getGuessLikeList()
+})
+
+defineExpose({
+  getGuessLikeList,
+  resetData,
+})
 </script>
 
 <template>
@@ -14,7 +44,7 @@ defineProps<{
   <view class="guess">
     <navigator
       class="guess-item"
-      v-for="item of list"
+      v-for="item of guessLikeList"
       :key="item"
       :url="`/pages/goods/goods?id=${item.id}`"
     >
@@ -26,7 +56,7 @@ defineProps<{
       </view>
     </navigator>
   </view>
-  <view class="loading-text"> 正在加载... </view>
+  <view class="loading-text"> {{ finish ? '加载完毕~' : '正在加载...' }} </view>
 </template>
 
 <style lang="scss">

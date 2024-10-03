@@ -1,0 +1,1 @@
+{"version":3,"file":"goods.js","sources":["../../../../src/services/goods.ts"],"sourcesContent":["import { http } from './index'\n\nexport const getGoodsDetailApi = <T>(id: string) => {\n  return http.get<T>({ url: `/goods?id=${id}` })\n}\n"],"names":["http"],"mappings":";;AAEa,MAAA,oBAAoB,CAAI,OAAe;AAClD,SAAOA,oBAAK,IAAO,EAAE,KAAK,aAAa,EAAE,IAAI;AAC/C;;"}
