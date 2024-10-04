@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const services_home = require("../../services/home.js");
+const composables_useGuess = require("../../composables/useGuess.js");
 require("../../services/index.js");
 require("../../stores/index.js");
 require("../../stores/modules/member.js");
@@ -36,11 +37,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       const { result } = await services_home.getHomeHotMutliApi();
       hotRecommendList.value = result;
     };
-    const guessLikeRef = common_vendor.ref();
-    const onScrollToLower = () => {
-      var _a;
-      (_a = guessLikeRef.value) == null ? void 0 : _a.getGuessLikeList();
-    };
+    const { guessRef: guessLikeRef, onScrollToLower } = composables_useGuess.useGuess();
     const refresh = common_vendor.ref(false);
     const onRefresherRefresh = async () => {
       var _a, _b;
@@ -78,7 +75,10 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         }),
         f: common_vendor.o(onRefresherRefresh),
         g: refresh.value,
-        h: common_vendor.o(onScrollToLower)
+        h: common_vendor.o(
+          //@ts-ignore
+          (...args) => common_vendor.unref(onScrollToLower) && common_vendor.unref(onScrollToLower)(...args)
+        )
       });
     };
   }

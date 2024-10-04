@@ -1,4 +1,8 @@
 {
   "navigationBarTitleText": "我的",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "xtx-guess": "../../components/XtxGuess"
+  }
 }

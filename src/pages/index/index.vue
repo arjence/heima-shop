@@ -4,6 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 
 import type { BannerItem, CategoryItem, HotRecommendItem } from '@/types/home'
 import { getHomeBannerApi, getHomeCategoryMutliApi, getHomeHotMutliApi } from '@/services/home'
+import { useGuess } from '@/composables/useGuess'
 
 import CustomNavBar from './cpns/CustomNavBar.vue'
 import CategoryPanel from './cpns/CategoryPanel.vue'
@@ -29,10 +30,7 @@ const getHotRecommend = async () => {
   hotRecommendList.value = result
 }
 
-const guessLikeRef = ref<InstanceType<typeof XtxGuess>>()
-const onScrollToLower = () => {
-  guessLikeRef.value?.getGuessLikeList()
-}
+const { guessRef: guessLikeRef, onScrollToLower } = useGuess()
 
 //下拉刷新
 const refresh = ref(false)

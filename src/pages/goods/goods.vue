@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { getGoodsDetailApi } from '@/services/goods'
+import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import type { GoodsResult } from '@/types/goods'
+
+import { getGoodsDetailApi } from '@/services/goods'
+import { postMemberCartApi } from '@/services/cart'
+
 import ServicePanel from './cpns/ServicePanel.vue'
 import AddressPanel from './cpns/AddressPanel.vue'
+
+import type { GoodsResult } from '@/types/goods'
+import type {
+  SkuPopupLocaldata,
+  SkuPopupInstanceType,
+  SkuPopupEvent,
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 
 const props = defineProps<{
   id: string
@@ -13,10 +22,54 @@ const props = defineProps<{
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
+const showSkuPopup = ref(false)
+const localdata = ref<SkuPopupLocaldata>()
+
 const goodsResult = ref<GoodsResult>()
 const getGoodsDetailData = async () => {
   const { result } = await getGoodsDetailApi<GoodsResult>(props.id)
   goodsResult.value = result
+  localdata.value = {
+    _id: result.id,
+    name: result.name,
+    goods_thumb: result.mainPictures[0],
+    spec_list: result.specs.map((item) => {
+      return { name: item.name, list: item.values }
+    }),
+    sku_list: result.skus.map((item) => {
+      return {
+        _id: item.id,
+        goods_id: result.id,
+        goods_name: result.name,
+        image: item.picture,
+        price: item.price * 100,
+        sku_name_arr: item.specs.map((item) => item.valueName),
+        stock: item.inventory,
+      }
+    }),
+  }
+}
+
+enum SkuMode {
+  BOTH = 1,
+  CART = 2,
+  BUY = 3,
+}
+const skuMode = ref<SkuMode>(SkuMode.BOTH)
+const onShowSkuPopup = (mode: SkuMode) => {
+  skuMode.value = mode
+  showSkuPopup.value = true
+}
+
+const skuPopupRef = ref<SkuPopupInstanceType>()
+const skuSelectArr = computed(() => {
+  return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
+})
+
+const onAddCart = async (selectShop: SkuPopupEvent) => {
+  await postMemberCartApi({ skuId: selectShop._id, count: selectShop.buy_num })
+  uni.showToast({ icon: 'success', title: '添加成功' })
+  showSkuPopup.value = false
 }
 
 const currentIndex = ref(0)
@@ -46,6 +99,16 @@ onLoad(() => {
 </script>
 
 <template>
+  <vk-data-goods-sku-popup
+    buy-now-background-color="#27ba9b"
+    add-cart-background-color="#ffa868"
+    :localdata="localdata"
+    v-model="showSkuPopup"
+    :mode="skuMode"
+    ref="skuPopupRef"
+    @cart="onAddCart"
+  />
+
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
     <view class="goods">
@@ -75,9 +138,9 @@ onLoad(() => {
 
       <!-- 操作面板 -->
       <view class="action">
-        <view class="item arrow">
+        <view class="item arrow" @tap="onShowSkuPopup(SkuMode.BOTH)">
           <text class="label">选择</text>
-          <text class="text ellipsis"> 请选择商品规格 </text>
+          <text class="text ellipsis"> {{ skuSelectArr }} </text>
         </view>
         <view class="item arrow" @tap="onOpenPopup('address')">
           <text class="label">送至</text>
@@ -149,8 +212,8 @@ onLoad(() => {
       </navigator>
     </view>
     <view class="buttons">
-      <view class="addcart"> 加入购物车 </view>
-      <view class="buynow"> 立即购买 </view>
+      <view class="addcart" @tap="onShowSkuPopup(SkuMode.CART)"> 加入购物车 </view>
+      <view class="buynow" @tap="onShowSkuPopup(SkuMode.BUY)"> 立即购买 </view>
     </view>
   </view>
 
