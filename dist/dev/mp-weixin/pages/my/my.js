@@ -37,7 +37,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             a: common_vendor.t(item.text),
             b: item.type,
             c: common_vendor.n(item.icon),
-            d: `/pagesOrder/list/list?type=${item.type}`
+            d: `/packageOrder/list/list?type=${item.type}`
           };
         }),
         f: common_vendor.sr(guessRef, "cb03c388-0", {

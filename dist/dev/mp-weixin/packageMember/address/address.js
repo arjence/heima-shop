@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const services_address = require("../../services/address.js");
+const stores_modules_address = require("../../stores/modules/address.js");
 require("../../services/index.js");
 require("../../stores/index.js");
 require("../../stores/modules/member.js");
@@ -16,7 +17,11 @@ if (!Math) {
 }
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "address",
+  props: {
+    from: null
+  },
   setup(__props) {
+    const props = __props;
     const addressList = common_vendor.ref([]);
     const getMemberAddressData = async () => {
       const { result } = await services_address.getMemberAddressApi();
@@ -38,6 +43,13 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         }
       });
     };
+    const { changeAddress } = stores_modules_address.useAddressStore();
+    const onChangeSelectedAddress = (item) => {
+      if (props.from === "order") {
+        changeAddress(item);
+        common_vendor.index.navigateBack();
+      }
+    };
     common_vendor.onShow(() => {
       getMemberAddressData();
     });
@@ -53,9 +65,12 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           }, item.isDefault ? {} : {}, {
             d: common_vendor.t(item.fullLocation + " " + item.address),
             e: `/packageMember/address-form/address-form?id=${item.id}`,
-            f: common_vendor.o(($event) => onDeleteAddress(item.id), item.id),
-            g: item.id,
-            h: "00fa93a2-1-" + i0 + ",00fa93a2-0"
+            f: common_vendor.o(() => {
+            }, item.id),
+            g: common_vendor.o(($event) => onChangeSelectedAddress(item), item.id),
+            h: common_vendor.o(($event) => onDeleteAddress(item.id), item.id),
+            i: item.id,
+            j: "00fa93a2-1-" + i0 + ",00fa93a2-0"
           });
         })
       } : {});

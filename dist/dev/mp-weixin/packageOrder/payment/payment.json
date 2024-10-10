@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "支付详情",
+  "usingComponents": {
+    "xtx-guess": "../../components/XtxGuess"
+  }
+}

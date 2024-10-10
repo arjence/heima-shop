@@ -69,6 +69,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       common_vendor.index.showToast({ icon: "success", title: "添加成功" });
       showSkuPopup.value = false;
     };
+    const onBuyNow = (selectShop) => {
+      common_vendor.index.navigateTo({
+        url: `/packageOrder/create/create?skuId=${selectShop._id}&count=${selectShop.buy_num}`
+      });
+    };
     const currentIndex = common_vendor.ref(0);
     const onSwiperItemChange = (e) => {
       currentIndex.value = e.detail.current;
@@ -98,48 +103,49 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           "k": "skuPopupRef"
         }),
         b: common_vendor.o(onAddCart),
-        c: common_vendor.o(($event) => showSkuPopup.value = $event),
-        d: common_vendor.p({
+        c: common_vendor.o(onBuyNow),
+        d: common_vendor.o(($event) => showSkuPopup.value = $event),
+        e: common_vendor.p({
           ["buy-now-background-color"]: "#27ba9b",
           ["add-cart-background-color"]: "#ffa868",
           localdata: localdata.value,
           mode: skuMode.value,
           modelValue: showSkuPopup.value
         }),
-        e: common_vendor.f((_a = goodsResult.value) == null ? void 0 : _a.mainPictures, (pic, k0, i0) => {
+        f: common_vendor.f((_a = goodsResult.value) == null ? void 0 : _a.mainPictures, (pic, k0, i0) => {
           return {
             a: common_vendor.o(($event) => onPreviewImage(pic), pic),
             b: pic,
             c: pic
           };
         }),
-        f: common_vendor.o(onSwiperItemChange),
-        g: common_vendor.t(currentIndex.value + 1),
-        h: common_vendor.t((_b = goodsResult.value) == null ? void 0 : _b.mainPictures.length),
-        i: common_vendor.t((_c = goodsResult.value) == null ? void 0 : _c.price),
-        j: common_vendor.t((_d = goodsResult.value) == null ? void 0 : _d.name),
-        k: common_vendor.t((_e = goodsResult.value) == null ? void 0 : _e.desc),
-        l: common_vendor.t(common_vendor.unref(skuSelectArr)),
-        m: common_vendor.o(($event) => onShowSkuPopup(
+        g: common_vendor.o(onSwiperItemChange),
+        h: common_vendor.t(currentIndex.value + 1),
+        i: common_vendor.t((_b = goodsResult.value) == null ? void 0 : _b.mainPictures.length),
+        j: common_vendor.t((_c = goodsResult.value) == null ? void 0 : _c.price),
+        k: common_vendor.t((_d = goodsResult.value) == null ? void 0 : _d.name),
+        l: common_vendor.t((_e = goodsResult.value) == null ? void 0 : _e.desc),
+        m: common_vendor.t(common_vendor.unref(skuSelectArr)),
+        n: common_vendor.o(($event) => onShowSkuPopup(
           1
           /* BOTH */
         )),
-        n: common_vendor.o(($event) => onOpenPopup("address")),
-        o: common_vendor.o(($event) => onOpenPopup("service")),
-        p: common_vendor.f((_f = goodsResult.value) == null ? void 0 : _f.details.properties, (prop, k0, i0) => {
+        o: common_vendor.o(($event) => onOpenPopup("address")),
+        p: common_vendor.o(($event) => onOpenPopup("service")),
+        q: common_vendor.f((_f = goodsResult.value) == null ? void 0 : _f.details.properties, (prop, k0, i0) => {
           return {
             a: common_vendor.t(prop.name),
             b: common_vendor.t(prop.value),
             c: prop.name
           };
         }),
-        q: common_vendor.f((_g = goodsResult.value) == null ? void 0 : _g.details.pictures, (img, k0, i0) => {
+        r: common_vendor.f((_g = goodsResult.value) == null ? void 0 : _g.details.pictures, (img, k0, i0) => {
           return {
             a: img,
             b: img
           };
         }),
-        r: common_vendor.f((_h = goodsResult.value) == null ? void 0 : _h.similarProducts, (item, k0, i0) => {
+        s: common_vendor.f((_h = goodsResult.value) == null ? void 0 : _h.similarProducts, (item, k0, i0) => {
           return {
             a: item.picture,
             b: common_vendor.t(item.name),
@@ -148,29 +154,29 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             e: `/pages/goods/goods?id=${item.id}`
           };
         }),
-        s: common_vendor.o(($event) => onShowSkuPopup(
+        t: common_vendor.o(($event) => onShowSkuPopup(
           2
           /* CART */
         )),
-        t: common_vendor.o(($event) => onShowSkuPopup(
+        v: common_vendor.o(($event) => onShowSkuPopup(
           3
           /* BUY */
         )),
-        v: ((_i = common_vendor.unref(safeAreaInsets)) == null ? void 0 : _i.bottom) + "px",
-        w: typeName.value === "service",
-        x: common_vendor.o(($event) => {
+        w: ((_i = common_vendor.unref(safeAreaInsets)) == null ? void 0 : _i.bottom) + "px",
+        x: typeName.value === "service",
+        y: common_vendor.o(($event) => {
           var _a2;
           return (_a2 = popup.value) == null ? void 0 : _a2.close();
         }),
-        y: typeName.value === "address",
-        z: common_vendor.o(($event) => {
+        z: typeName.value === "address",
+        A: common_vendor.o(($event) => {
           var _a2;
           return (_a2 = popup.value) == null ? void 0 : _a2.close();
         }),
-        A: common_vendor.sr(popup, "2c4bd5ea-1", {
+        B: common_vendor.sr(popup, "2c4bd5ea-1", {
           "k": "popup"
         }),
-        B: common_vendor.p({
+        C: common_vendor.p({
           type: "bottom"
         })
       };

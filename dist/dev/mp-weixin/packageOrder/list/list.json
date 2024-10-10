@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "订单分类",
+  "usingComponents": {
+    "order-list": "./cpns/order-list"
+  }
+}

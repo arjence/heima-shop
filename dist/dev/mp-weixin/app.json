@@ -2,11 +2,12 @@
   "pages": [
     "pages/index/index",
     "pages/my/my",
-    "pages/cart/cart",
+    "pages/cart/cart-tab",
     "pages/category/category",
     "pages/login/login",
     "pages/hot/hot",
-    "pages/goods/goods"
+    "pages/goods/goods",
+    "pages/cart/cart-page"
   ],
   "subPackages": [
     {
@@ -16,6 +17,15 @@
         "profile/profile",
         "address/address",
         "address-form/address-form"
+      ]
+    },
+    {
+      "root": "packageOrder",
+      "pages": [
+        "create/create",
+        "detail/detail",
+        "payment/payment",
+        "list/list"
       ]
     }
   ],
@@ -45,7 +55,7 @@
       },
       {
         "text": "购物车",
-        "pagePath": "pages/cart/cart",
+        "pagePath": "pages/cart/cart-tab",
         "iconPath": "static/tabs/cart_default.png",
         "selectedIconPath": "static/tabs/cart_selected.png"
       },

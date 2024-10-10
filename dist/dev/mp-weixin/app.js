@@ -6,15 +6,20 @@ require("./stores/modules/member.js");
 if (!Math) {
   "./pages/index/index.js";
   "./pages/my/my.js";
-  "./pages/cart/cart.js";
+  "./pages/cart/cart-tab.js";
   "./pages/category/category.js";
   "./pages/login/login.js";
   "./pages/hot/hot.js";
   "./pages/goods/goods.js";
+  "./pages/cart/cart-page.js";
   "./packageMember/setting/setting.js";
   "./packageMember/profile/profile.js";
   "./packageMember/address/address.js";
   "./packageMember/address-form/address-form.js";
+  "./packageOrder/create/create.js";
+  "./packageOrder/detail/detail.js";
+  "./packageOrder/payment/payment.js";
+  "./packageOrder/list/list.js";
 }
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "App",

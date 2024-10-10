@@ -72,6 +72,12 @@ const onAddCart = async (selectShop: SkuPopupEvent) => {
   showSkuPopup.value = false
 }
 
+const onBuyNow = (selectShop: SkuPopupEvent) => {
+  uni.navigateTo({
+    url: `/packageOrder/create/create?skuId=${selectShop._id}&count=${selectShop.buy_num}`,
+  })
+}
+
 const currentIndex = ref(0)
 const onSwiperItemChange: UniHelper.SwiperOnChange = (e) => {
   currentIndex.value = e.detail.current
@@ -107,6 +113,7 @@ onLoad(() => {
     :mode="skuMode"
     ref="skuPopupRef"
     @cart="onAddCart"
+    @buy="onBuyNow"
   />
 
   <scroll-view scroll-y class="viewport">
@@ -207,7 +214,7 @@ onLoad(() => {
       <button class="icons-button" open-type="contact">
         <text class="icon-handset"></text>客服
       </button>
-      <navigator class="icons-button" url="/pages/cart/cart" open-type="switchTab">
+      <navigator class="icons-button" url="/pages/cart/cart-page">
         <text class="icon-cart"></text>购物车
       </navigator>
     </view>

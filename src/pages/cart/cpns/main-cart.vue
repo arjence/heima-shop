@@ -1,13 +1,85 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { getMemberCartApi } from '@/services/cart'
+import {
+  getMemberCartApi,
+  deleteMemberCartBySkuIdsApi,
+  putMemberCartBySkuIdApi,
+  putMemberCartSelectedApi,
+} from '@/services/cart'
+import { debounce } from '@/utils/debounce'
+
 import type { CartItem } from '@/types/cart'
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
+import { useGuess } from '@/composables/useGuess'
+
+const props = defineProps<{
+  isTab: false
+}>()
+
+let { safeAreaInsets } = uni.getSystemInfoSync()
+
+const { guessRef, onScrollToLower } = useGuess()
 
 const memberCartList = ref<CartItem[]>([])
 const getMemberCartData = async () => {
   const { result } = await getMemberCartApi<CartItem[]>()
   memberCartList.value = result
+}
+
+const onDelete = (skuId: string) => {
+  uni.showModal({
+    content: '确定删除吗？',
+    success: async (success) => {
+      if (success) {
+        const { result } = await deleteMemberCartBySkuIdsApi([skuId])
+        if (result) {
+          const index = memberCartList.value.findIndex((item) => item.skuId === skuId)
+          memberCartList.value.splice(index, 1)
+        } else {
+          uni.showToast({ icon: 'fail', title: '删除失败，请重试！' })
+        }
+      }
+    },
+  })
+}
+
+//防抖
+const onChangeCount = debounce((e: InputNumberBoxEvent) => {
+  putMemberCartBySkuIdApi(e.index, { count: e.value })
+}, 200)
+
+const onChangeSelect = (item: CartItem) => {
+  item.selected = !item.selected
+  putMemberCartBySkuIdApi(item.skuId, { selected: item.selected })
+}
+
+const selectAll = computed(() => memberCartList.value.every((item) => item.selected), {})
+
+const changeSelectAll = () => {
+  const _selectAll = !selectAll.value
+  memberCartList.value.forEach((item) => (item.selected = _selectAll))
+  putMemberCartSelectedApi(_selectAll)
+}
+
+const selectedList = computed(() => memberCartList.value.filter((item) => item.selected))
+
+const selectedAllCount = computed(() => {
+  return selectedList.value.reduce((pre, cur) => pre + cur.count, 0)
+})
+
+const selectedAccount = computed(() => {
+  return selectedList.value.reduce((pre, cur) => pre + (cur.nowPrice * 100 * cur.count) / 100, 0)
+})
+
+const onSettleAccount = () => {
+  if (selectedList.value.length === 0) {
+    return uni.showToast({
+      title: '请选择商品！',
+    })
+  }
+
+  uni.navigateTo({ url: '/packageOrder/create/create' })
 }
 
 onShow(() => {
@@ -16,7 +88,7 @@ onShow(() => {
 </script>
 
 <template>
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrollToLower">
     <!-- 已登录: 显示购物车 -->
     <template v-if="true">
       <!-- 购物车列表 -->
@@ -37,7 +109,11 @@ onShow(() => {
             <!-- 商品信息 -->
             <view class="goods">
               <!-- 选中状态 -->
-              <text class="checkbox" :class="{ checked: true }"></text>
+              <text
+                class="checkbox"
+                @tap="onChangeSelect(item)"
+                :class="{ checked: item.selected }"
+              ></text>
               <navigator
                 :url="`/pages/goods/goods?id=${item.id}`"
                 hover-class="none"
@@ -52,15 +128,19 @@ onShow(() => {
               </navigator>
               <!-- 商品数量 -->
               <view class="count">
-                <text class="text">-</text>
-                <input class="input" type="number" v-model="item.count" />
-                <text class="text">+</text>
+                <vk-data-input-number-box
+                  @change="onChangeCount"
+                  :min="1"
+                  :max="item.stock"
+                  :index="item.skuId"
+                  v-model="item.count"
+                />
               </view>
             </view>
             <!-- 右侧删除按钮 -->
             <template #right>
               <view class="cart-swipe-right">
-                <button class="button delete-button">删除</button>
+                <button @tap="onDelete(item.skuId)" class="button delete-button">删除</button>
               </view>
             </template>
           </uni-swipe-action-item>
@@ -75,12 +155,18 @@ onShow(() => {
         </navigator>
       </view>
       <!-- 吸底工具栏 -->
-      <view class="toolbar">
-        <text class="all" :class="{ checked: true }">全选</text>
+      <view class="toolbar" :style="{ paddingBottom: (isTab ? 0 : safeAreaInsets?.bottom) + 'px' }">
+        <text class="all" @tap="changeSelectAll" :class="{ checked: selectAll }">全选</text>
         <text class="text">合计:</text>
-        <text class="amount">100</text>
+        <text class="amount">{{ selectedAccount }}</text>
         <view class="button-grounp">
-          <view class="button payment-button" :class="{ disabled: true }"> 去结算(10) </view>
+          <view
+            class="button payment-button"
+            @tap="onSettleAccount"
+            :class="{ disabled: selectedList.length === 0 }"
+          >
+            去结算({{ selectedAllCount }})</view
+          >
         </view>
       </view>
     </template>

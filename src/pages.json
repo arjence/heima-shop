@@ -26,7 +26,7 @@
 			}
 		},
 		{
-			"path": "pages/cart/cart",
+			"path": "pages/cart/cart-tab",
 			"style": {
 				"navigationBarTitleText": "购物车"
 			}
@@ -53,6 +53,12 @@
 			"path": "pages/goods/goods",
 			"style": {
 				"navigationBarTitleText": "商品详情"
+			}
+		},
+		{
+			"path": "pages/cart/cart-page",
+			"style": {
+				"navigationBarTitleText": "购物车"
 			}
 		}
 	],
@@ -83,7 +89,7 @@
 			},
 			{
 				"text": "购物车",
-				"pagePath": "pages/cart/cart",
+				"pagePath": "pages/cart/cart-tab",
 				"iconPath": "static/tabs/cart_default.png",
 				"selectedIconPath": "static/tabs/cart_selected.png"
 			},
@@ -124,6 +130,36 @@
 					"style": {
 						"navigationBarTitleText": "新增地址"
 					}
+				}
+			]
+		},
+		{
+			"root": "packageOrder",
+			"pages": [
+				{
+					"path": "create/create",
+					"style": {
+						"navigationBarTitleText": "填写订单"
+					}
+				},
+				{
+					"path": "detail/detail",
+					"style": {
+						"navigationBarTitleText": "订单详情",
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "payment/payment",
+					"style": {
+						"navigationBarTitleText": "支付详情"
+					}
+				},
+				{
+					"path": "list/list",
+					"style": {
+						"navigationBarTitleText": "订单分类"
+					},
 				}
 			]
 		}
