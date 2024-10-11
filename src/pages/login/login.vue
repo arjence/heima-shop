@@ -5,6 +5,7 @@ import { postLoginWxMin, postLoginWxMinSimple } from '@/services/login'
 import type { LoginResult } from '@/types/member'
 import { useMemberStore } from '@/stores'
 
+// #ifdef MP-WEIXIN
 let code = ''
 onLoad(async () => {
   const res = await uni.login()
@@ -17,6 +18,7 @@ const onGetPhoneNumber = async (e: UniHelper.ButtonOnGetphonenumberEvent) => {
   const { result } = await postLoginWxMin<LoginResult>({ code, encryptedData, iv })
   loginSuccess(result)
 }
+// #endif
 
 const onLoginSimple = async () => {
   const { result } = await postLoginWxMinSimple<LoginResult>()
