@@ -20,7 +20,7 @@ const activeIndex = ref(0)
 const hotItem = hotMap.find((item) => item.type == props.type)
 uni.setNavigationBarTitle({ title: hotItem!.title })
 
-const subTypes = ref<(SubTypes & { finish?: boolean })[]>()
+const subTypes = ref<(SubTypes & { finish?: boolean })[]>([])
 const bannerPic = ref('')
 const url = hotItem?.url!
 const getHotRecommendData = async () => {
@@ -73,7 +73,7 @@ onLoad(() => {
         <navigator
           hover-class="none"
           class="navigator"
-          v-for="goods in subTypes![activeIndex].goodsItems.items"
+          v-for="goods in subTypes[activeIndex]?.goodsItems.items"
           :key="goods"
           :url="`/pages/goods/goods?id=${goods.id}`"
         >
@@ -86,7 +86,7 @@ onLoad(() => {
         </navigator>
       </view>
       <view class="loading-text">{{
-        subTypes![activeIndex].finish ? '数据加载完毕~' : '正在加载...'
+        subTypes[activeIndex]?.finish ? '数据加载完毕~' : '正在加载...'
       }}</view>
     </scroll-view>
   </view>
